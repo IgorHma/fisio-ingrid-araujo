@@ -12,7 +12,8 @@ const CONFIG = {
   whatsapp: "5581996449249", // Somente números com DDI (55) + DDD
   instagramUsuario: "@fisioingridaraujo",
   instagramUrl: "https://www.instagram.com/fisioingridaraujo/",
-  endereco: "Atendimento domiciliar e em consultório · João Pessoa/PB",
+  endereco: "R. Antônio Rabelo Júnior, 170 - Miramar, João Pessoa - PB, 58032-090 · Sala 1202 (12º andar)",
+  mapsUrl: "https://www.google.com/maps/search/?api=1&query=R.+Ant%C3%B4nio+Rabelo+J%C3%BAnior,+170+-+Miramar,+Jo%C3%A3o+Pessoa+-+PB,+58032-090",
   horarioAtendimento: "Segunda a Sexta · Com hora marcada",
   corPrincipal: "#721F32", // Bordô principal (combinado com Rosa Chá no CSS)
   fotoHero: "assets/ingrid.jpg",
@@ -106,6 +107,13 @@ const CONFIG = {
 
   document.querySelectorAll("[data-ig-user]").forEach((el) => {
     el.textContent = CONFIG.instagramUsuario;
+  });
+
+  // Links de Google Maps
+  document.querySelectorAll("[data-maps]").forEach((el) => {
+    el.href = CONFIG.mapsUrl || "#";
+    el.target = "_blank";
+    el.rel = "noopener";
   });
 
   // Ano atual no rodapé
