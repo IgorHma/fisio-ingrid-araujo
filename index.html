@@ -325,64 +325,32 @@
       </div>
     </section>
 
-    <!-- ================= DEPOIMENTOS (CARROSSEL SWIPE NO CELULAR) ================= -->
+    <!-- ================= DEPOIMENTOS DINÂMICOS (CARROSSEL) ================= -->
     <section class="testimonials" id="depoimentos">
       <div class="container">
         <div class="section-head reveal">
           <span class="eyebrow">Acolhimento real</span>
           <h2>O que dizem as <em>pacientes</em></h2>
-          <p>Relatos reais (com iniciais preservadas para total sigilo) de mulheres que transformaram sua qualidade de vida.</p>
-          <span class="swipe-hint">← Arraste para o lado para ver mais →</span>
+          <p>Relatos reais de mulheres que transformaram sua saúde íntima e qualidade de vida.</p>
+          <span class="swipe-hint">← Arraste para o lado para ver mais feedbacks →</span>
         </div>
 
-        <div class="testi-grid">
-          <article class="testi-card reveal">
-            <div>
-              <div class="stars" aria-label="5 estrelas">★★★★★</div>
-              <blockquote>
-                “Passei muitos anos sentindo desconforto para ter relação e tinha muito receio de procurar ajuda, mas a Ingrid me deixou super à vontade desde o primeiro minuto. Explicou tudo com muita delicadeza e, com o tratamento, tive uma melhora bem significativa que mudou muito a minha qualidade de vida!”
-              </blockquote>
-            </div>
-            <div class="testi-author">
-              <div class="testi-avatar">M.S.</div>
-              <div>
-                <strong>Paciente M. S.</strong>
-                <span>Tratamento de Dor na Relação</span>
-              </div>
-            </div>
-          </article>
+        <div class="testi-carousel-wrap reveal">
+          <div class="testi-grid" id="testiTrack">
+            <!-- Os cards de depoimentos são gerados dinamicamente pelo script.js (CONFIG.depoimentos) -->
+          </div>
 
-          <article class="testi-card reveal reveal-delay-1">
-            <div>
-              <div class="stars" aria-label="5 estrelas">★★★★★</div>
-              <blockquote>
-                “O atendimento domiciliar no pós-parto salvou minha rotina com o bebê. Muito atenciosa, pontual e cuidadosa. Me ajudou a recuperar a força abdominal e pélvica com segurança.”
-              </blockquote>
-            </div>
-            <div class="testi-author">
-              <div class="testi-avatar">C.A.</div>
-              <div>
-                <strong>Paciente C. A.</strong>
-                <span>Acompanhamento Gestação e Pós-parto</span>
-              </div>
-            </div>
-          </article>
+          <div class="testi-controls">
+            <button class="testi-nav-btn" id="testiPrev" type="button" aria-label="Depoimento anterior">‹</button>
+            <div class="testi-dots" id="testiDots" aria-label="Indicadores de depoimentos"></div>
+            <button class="testi-nav-btn" id="testiNext" type="button" aria-label="Próximo depoimento">›</button>
+          </div>
 
-          <article class="testi-card reveal reveal-delay-2">
-            <div>
-              <div class="stars" aria-label="5 estrelas">★★★★★</div>
-              <blockquote>
-                “Convivi anos achando que pequenos escapes de xixi ao tossir eram normais. Com os exercícios certos e o acompanhamento da Ingrid, voltei a fazer academia sem medo. Recomendo de olhos fechados!”
-              </blockquote>
-            </div>
-            <div class="testi-author">
-              <div class="testi-avatar">R.F.</div>
-              <div>
-                <strong>Paciente R. F.</strong>
-                <span>Reabilitação de Assoalho Pélvico</span>
-              </div>
-            </div>
-          </article>
+          <div class="testi-cta">
+            <a class="btn btn-outline" id="btnEnviarDepoimento" href="#" target="_blank" rel="noopener">
+              💬 Já é paciente? Deixe seu feedback
+            </a>
+          </div>
         </div>
       </div>
     </section>

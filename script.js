@@ -18,7 +18,38 @@ const CONFIG = {
   corPrincipal: "#721F32", // Bordô principal (combinado com Rosa Chá no CSS)
   fotoHero: "assets/ingrid.jpg",
   fotoSobre: "assets/ingrid.jpg", // Se tiver uma 2ª foto, basta salvar em assets/ e mudar aqui!
-  mensagemPadraoWhatsApp: "Olá, Ingrid! Vim pelo seu site e gostaria de agendar uma avaliação de fisioterapia pélvica."
+  mensagemPadraoWhatsApp: "Olá, Ingrid! Vim pelo seu site e gostaria de agendar uma avaliação de fisioterapia pélvica.",
+
+  /**
+   * LISTA DINÂMICA DE FEEDBACKS / DEPOIMENTOS DE PACIENTES
+   * Para adicionar um novo depoimento, basta adicionar mais um bloco { nome, tratamento, texto } abaixo!
+   */
+  depoimentos: [
+    {
+      nome: "Jéssica Kelly",
+      iniciais: "JK",
+      tratamento: "Tratamento de Dor na Relação (Pós-operatório)",
+      texto: "Aiii, Ingrid! Você é fantástica, fico muito feliz em ter seguido o tratamento de dor na relação no pós-operatório com você e ter sido bem-sucedido, em cada sessão via sua dedicação, empatia e profissionalismo. Deus te abençoe e que suas mãos sejam instrumento de cura para quem precisar! Obrigada 👏🫶"
+    },
+    {
+      nome: "Paciente M. S.",
+      iniciais: "M.S.",
+      tratamento: "Tratamento de Dor na Relação",
+      texto: "Passei muitos anos sentindo desconforto para ter relação e tinha muito receio de procurar ajuda, mas a Ingrid me deixou super à vontade desde o primeiro minuto. Explicou tudo com muita delicadeza e, com o tratamento, tive uma melhora bem significativa que mudou muito a minha qualidade de vida!"
+    },
+    {
+      nome: "Paciente C. A.",
+      iniciais: "C.A.",
+      tratamento: "Acompanhamento Gestação e Pós-parto",
+      texto: "O atendimento domiciliar no pós-parto salvou minha rotina com o bebê. Muito atenciosa, pontual e cuidadosa. Me ajudou a recuperar a força abdominal e pélvica com segurança."
+    },
+    {
+      nome: "Paciente R. F.",
+      iniciais: "R.F.",
+      tratamento: "Reabilitação de Assoalho Pélvico",
+      texto: "Convivi anos achando que pequenos escapes de xixi ao tossir eram normais. Com os exercícios certos e o acompanhamento da Ingrid, voltei a fazer academia sem medo. Recomendo de olhos fechados!"
+    }
+  ]
 };
 
 (function () {
@@ -40,6 +71,17 @@ const CONFIG = {
     const digitos = (CONFIG.whatsapp || "").replace(/\D/g, "");
     const texto = mensagemCustomizada || CONFIG.mensagemPadraoWhatsApp;
     return `https://wa.me/${digitos}?text=${encodeURIComponent(texto)}`;
+  }
+
+  function obterIniciais(nomeStr, iniciaisCustom) {
+    if (iniciaisCustom) return iniciaisCustom;
+    return (nomeStr || "P")
+      .replace(/^Paciente\s+/i, "")
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((p) => p.charAt(0).toUpperCase())
+      .join("");
   }
 
   // 3. Atualiza elementos com data-attributes
@@ -98,6 +140,14 @@ const CONFIG = {
     el.textContent = formatarTelefone(CONFIG.whatsapp);
   });
 
+  // Botão para paciente enviar novo depoimento pelo WhatsApp
+  const btnEnviarDepoimento = document.getElementById("btnEnviarDepoimento");
+  if (btnEnviarDepoimento) {
+    btnEnviarDepoimento.href = gerarLinkWhatsApp(
+      `Olá, ${CONFIG.nome}! Gostaria de deixar meu feedback sobre o tratamento para publicar no seu site:\n\n`
+    );
+  }
+
   // Links de Instagram
   document.querySelectorAll("[data-ig]").forEach((el) => {
     el.href = CONFIG.instagramUrl || "#";
@@ -120,7 +170,109 @@ const CONFIG = {
   const anoEl = document.getElementById("anoAtual");
   if (anoEl) anoEl.textContent = new Date().getFullYear();
 
-  // 4. Menu Mobile
+  // 4. Renderização Dinâmica dos Depoimentos (Carrossel)
+  const testiTrack = document.getElementById("testiTrack");
+  const testiDots = document.getElementById("testiDots");
+  const testiPrev = document.getElementById("testiPrev");
+  const testiNext = document.getElementById("testiNext");
+
+  if (testiTrack && Array.isArray(CONFIG.depoimentos)) {
+    testiTrack.innerHTML = "";
+    if (testiDots) testiDots.innerHTML = "";
+
+    CONFIG.depoimentos.forEach((item, index) => {
+      const card = document.createElement("article");
+      card.className = "testi-card";
+
+      const topDiv = document.createElement("div");
+      const stars = document.createElement("div");
+      stars.className = "stars";
+      stars.setAttribute("aria-label", "5 estrelas");
+      stars.textContent = "★★★★★";
+
+      const quote = document.createElement("blockquote");
+      quote.textContent = `“${item.texto}”`;
+
+      topDiv.appendChild(stars);
+      topDiv.appendChild(quote);
+
+      const authorDiv = document.createElement("div");
+      authorDiv.className = "testi-author";
+
+      const avatar = document.createElement("div");
+      avatar.className = "testi-avatar";
+      avatar.textContent = obterIniciais(item.nome, item.iniciais);
+
+      const metaDiv = document.createElement("div");
+      const strong = document.createElement("strong");
+      strong.textContent = item.nome;
+      const span = document.createElement("span");
+      span.textContent = item.tratamento || "Paciente";
+
+      metaDiv.appendChild(strong);
+      metaDiv.appendChild(span);
+
+      authorDiv.appendChild(avatar);
+      authorDiv.appendChild(metaDiv);
+
+      card.appendChild(topDiv);
+      card.appendChild(authorDiv);
+      testiTrack.appendChild(card);
+
+      if (testiDots) {
+        const dot = document.createElement("button");
+        dot.type = "button";
+        dot.className = "testi-dot" + (index === 0 ? " active" : "");
+        dot.setAttribute("aria-label", `Ver depoimento ${index + 1}`);
+        dot.addEventListener("click", () => {
+          const cards = testiTrack.querySelectorAll(".testi-card");
+          if (cards[index]) {
+            testiTrack.scrollTo({
+              left: cards[index].offsetLeft - testiTrack.offsetLeft,
+              behavior: "smooth"
+            });
+          }
+        });
+        testiDots.appendChild(dot);
+      }
+    });
+
+    function atualizarDotAtivo() {
+      if (!testiDots) return;
+      const cards = testiTrack.querySelectorAll(".testi-card");
+      const dots = testiDots.querySelectorAll(".testi-dot");
+      if (!cards.length || !dots.length) return;
+
+      let closestIndex = 0;
+      let minDiff = Infinity;
+      const scrollLeft = testiTrack.scrollLeft;
+
+      cards.forEach((c, idx) => {
+        const diff = Math.abs(c.offsetLeft - testiTrack.offsetLeft - scrollLeft);
+        if (diff < minDiff) {
+          minDiff = diff;
+          closestIndex = idx;
+        }
+      });
+
+      dots.forEach((d, idx) => {
+        d.classList.toggle("active", idx === closestIndex);
+      });
+    }
+
+    testiTrack.addEventListener("scroll", atualizarDotAtivo, { passive: true });
+
+    function rolarCarrossel(direcao) {
+      const card = testiTrack.querySelector(".testi-card");
+      const larguraPasso = card ? card.offsetWidth + 18 : 300;
+      testiTrack.scrollBy({ left: direcao * larguraPasso, behavior: "smooth" });
+    }
+
+    if (testiPrev) testiPrev.addEventListener("click", () => rolarCarrossel(-1));
+    if (testiNext) testiNext.addEventListener("click", () => rolarCarrossel(1));
+  }
+
+  // 5. Menu Mobile
   const menuBtn = document.getElementById("menuToggle");
   const mobileNav = document.getElementById("mobileNav");
   if (menuBtn && mobileNav) {
@@ -137,7 +289,7 @@ const CONFIG = {
     });
   }
 
-  // 5. Sombra no Header ao rolar a página
+  // 6. Sombra no Header ao rolar a página
   const header = document.querySelector("header");
   window.addEventListener("scroll", () => {
     if (!header) return;
@@ -148,7 +300,7 @@ const CONFIG = {
     }
   });
 
-  // 6. Accordion de Perguntas Frequentes (FAQ)
+  // 7. Accordion de Perguntas Frequentes (FAQ)
   document.querySelectorAll(".faq-item").forEach((item) => {
     const btn = item.querySelector(".faq-question");
     const answer = item.querySelector(".faq-answer");
@@ -171,7 +323,7 @@ const CONFIG = {
     });
   });
 
-  // 7. Formulário inteligente que envia para o WhatsApp
+  // 8. Formulário inteligente que envia para o WhatsApp
   const waForm = document.getElementById("waForm");
   if (waForm) {
     waForm.addEventListener("submit", (ev) => {
@@ -198,7 +350,7 @@ const CONFIG = {
     });
   }
 
-  // 8. Animações suaves de entrada (Scroll Reveal)
+  // 9. Animações suaves de entrada (Scroll Reveal)
   const revealElements = document.querySelectorAll(".reveal");
   if ("IntersectionObserver" in window && revealElements.length > 0) {
     const observer = new IntersectionObserver(

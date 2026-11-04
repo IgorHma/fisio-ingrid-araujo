@@ -1009,18 +1009,33 @@ nav.main-nav a:hover::after {
   flex-wrap: wrap;
 }
 
-/* ---------- Testimonials ---------- */
+/* ---------- Testimonials (Dynamic Carousel) ---------- */
 .testimonials {
   background: var(--cream-2);
 }
 
+.testi-carousel-wrap {
+  position: relative;
+}
+
 .testi-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
   gap: 22px;
+  padding: 6px 4px 16px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.testi-grid::-webkit-scrollbar {
+  display: none;
 }
 
 .testi-card {
+  flex: 0 0 calc((100% - 44px) / 3);
+  scroll-snap-align: start;
   background: #fff;
   border-radius: var(--radius);
   padding: 28px 26px;
@@ -1029,6 +1044,75 @@ nav.main-nav a:hover::after {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  transition: transform 0.25s ease, border-color 0.25s ease;
+}
+
+.testi-card:hover {
+  border-color: var(--tea-rose-deep);
+}
+
+.testi-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.testi-nav-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1.5px solid var(--tea-rose);
+  background: #fff;
+  color: var(--accent);
+  font-size: 1.4rem;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.testi-nav-btn:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.testi-dots {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.testi-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  border: none;
+  background: var(--tea-rose);
+  opacity: 0.55;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.testi-dot.active {
+  width: 24px;
+  background: var(--accent);
+  opacity: 1;
+}
+
+.testi-cta {
+  text-align: center;
+  margin-top: 22px;
+}
+
+.testi-cta .btn {
+  min-height: 46px;
+  padding: 10px 22px;
+  font-size: 0.88rem;
 }
 
 .stars {
