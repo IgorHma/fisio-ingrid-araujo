@@ -22,12 +22,12 @@ const CONFIG = {
 
   /**
    * LISTA DINÂMICA DE FEEDBACKS / DEPOIMENTOS DE PACIENTES
-   * Para adicionar um novo depoimento, basta adicionar mais um bloco { nome, tratamento, texto } abaixo!
+   * Sempre exibidos apenas com as iniciais (ex.: Paciente J. K.) para preservar o sigilo.
    */
   depoimentos: [
     {
-      nome: "Jéssica Kelly",
-      iniciais: "JK",
+      nome: "Paciente J. K.",
+      iniciais: "J.K.",
       tratamento: "Tratamento de Dor na Relação (Pós-operatório)",
       texto: "Aiii, Ingrid! Você é fantástica, fico muito feliz em ter seguido o tratamento de dor na relação no pós-operatório com você e ter sido bem-sucedido, em cada sessão via sua dedicação, empatia e profissionalismo. Deus te abençoe e que suas mãos sejam instrumento de cura para quem precisar! Obrigada 👏🫶"
     },
@@ -73,15 +73,29 @@ const CONFIG = {
     return `https://wa.me/${digitos}?text=${encodeURIComponent(texto)}`;
   }
 
-  function obterIniciais(nomeStr, iniciaisCustom) {
+  // Extrai iniciais com ponto (ex.: "J.K.") e garante que o nome exibido seja sempre "Paciente X. Y."
+  function extrairLetrasIniciais(nomeStr, iniciaisCustom) {
     if (iniciaisCustom) return iniciaisCustom;
-    return (nomeStr || "P")
+    const partes = (nomeStr || "P")
       .replace(/^Paciente\s+/i, "")
-      .split(/\s+/)
+      .split(/[\s.]+/)
       .filter(Boolean)
       .slice(0, 2)
-      .map((p) => p.charAt(0).toUpperCase())
-      .join("");
+      .map((p) => p.charAt(0).toUpperCase());
+    return partes.join(".") + ".";
+  }
+
+  function formatarNomeSigilo(nomeStr, iniciaisCustom) {
+    if (/^Paciente\s+[A-Z]\.\s*[A-Z]\.?$/i.test((nomeStr || "").trim())) {
+      return nomeStr.trim();
+    }
+    const letras = (iniciaisCustom || nomeStr || "P")
+      .replace(/^Paciente\s+/i, "")
+      .split(/[\s.]+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((p) => p.charAt(0).toUpperCase() + ".");
+    return "Paciente " + letras.join(" ");
   }
 
   // 3. Atualiza elementos com data-attributes
@@ -201,11 +215,11 @@ const CONFIG = {
 
       const avatar = document.createElement("div");
       avatar.className = "testi-avatar";
-      avatar.textContent = obterIniciais(item.nome, item.iniciais);
+      avatar.textContent = extrairLetrasIniciais(item.nome, item.iniciais);
 
       const metaDiv = document.createElement("div");
       const strong = document.createElement("strong");
-      strong.textContent = item.nome;
+      strong.textContent = formatarNomeSigilo(item.nome, item.iniciais);
       const span = document.createElement("span");
       span.textContent = item.tratamento || "Paciente";
 
